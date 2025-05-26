@@ -79,3 +79,11 @@ def compute_grcs(auc_mtx_full, auc_mtx_pred):
                 grcs_corr += np.corrcoef(auc_mtx_true[i], auc_mtx_pred[i])[0,1]
                 grcs_dict[i] = np.corrcoef(auc_mtx_true[i], auc_mtx_pred[i])[0,1]
     return grcs_corr/len(auc_mtx_full.columns), grcs_dict
+
+def bootstrap_auc(input_file:str, data_dir:str, n_iterations:int = 50, seed:int = 999):
+    grcs = np.zeros(n_iterations)
+    for i in range(n_iterations):
+        auc_mtx = compute_auc(input_path=input_file, data_dir=data_dir, output_file_name='bootstrap_auc.loom', loom_file_name='')
+        auc_mtx2 = compute_auc(input_path=input_file, data_dir=data_dir, output_file_name='bootstrap_auc.loom', loom_file_name='')
+        grcs[i] = compute_grcs(auc_mtx, auc_mtx2)[0]
+    return {'mean': np.mean(grcs), 'std': np.std(grcs)}   
