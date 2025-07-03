@@ -79,6 +79,8 @@ def compute_grcs(auc_mtx_full, auc_mtx_pred):
             if auc_mtx_true[i].std() > 0 and auc_mtx_pred[i].std() > 0:
                 grcs_corr += np.corrcoef(auc_mtx_true[i], auc_mtx_pred[i])[0,1]
                 grcs_dict[i] = np.corrcoef(auc_mtx_true[i], auc_mtx_pred[i])[0,1]
+            else:
+                grcs_dict[i] = 0
     return grcs_corr/len(auc_mtx_full.columns), grcs_dict
 
 def bootstrap_auc(input_file:str, data_dir:str, n_iterations:int = 50, seed:int = 999):
@@ -150,10 +152,10 @@ def compute_deg(RNA_data, hv=False, plot=False):
         plt.tight_layout()
         plt.savefig('my_plot.svg', format='svg')
 
-    return sig_enrichments
+    return sig_enrichments, deg
 
-    def compute_pathway_overlap(true_df, pred_df, pval_thresh=0.05):
-    # Identify common enriched terms
+def compute_pathway_overlap(sig_true, sig_pred):
+# Identify common enriched terms
     shared_terms = set(sig_true['Term']).intersection(sig_pred['Term'])
 
     dict = {}
